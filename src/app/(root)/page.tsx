@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 export default function Home() {
   return (
     <>
-      <p>Hello Admin Dashboard</p>
+      <p>Hello Store front</p>
       <Button variant="outline">Button</Button>
     </>
   );
