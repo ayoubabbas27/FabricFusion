@@ -1,5 +1,5 @@
 "use client"
-import { NAV_LINKS } from "@/lib/constants"
+import { ADMIN_NAV_LINKS } from "@/lib/constants"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -33,7 +33,7 @@ const AdminNav = () => {
             Account
           </div>
           {
-            NAV_LINKS.map((link) => (
+            ADMIN_NAV_LINKS.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}
@@ -49,7 +49,7 @@ const AdminNav = () => {
 
         <div className='hidden bg-primary lg:flex lg:flex-row lg:justify-between lg:items-start gap-5'>
           {
-            NAV_LINKS.map((link) => (
+            ADMIN_NAV_LINKS.map((link) => (
               <Link
                 key={link.key}
                 href={link.href}

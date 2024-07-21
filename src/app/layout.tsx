@@ -4,14 +4,6 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils"
 
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
-
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",

@@ -49,6 +49,7 @@ async function ProductsTable (){
       imagePath: true, 
       isAvailableForPurchase: true, 
       createdAt: true,
+      orders: true,
       _count: {select: {orders: true}}
     },
     orderBy: {name: "asc"}
@@ -115,7 +116,7 @@ async function ProductsTable (){
                         />
                         <DeleteDropDownItem 
                           id={product.id}
-                          disabled={product._count.orders > 0 }
+                          disabled={product.orders.some((order) => order.fulfilled === false)}
                         />
                     </DropdownMenuContent>
                   </DropdownMenu>

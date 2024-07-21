@@ -15,10 +15,18 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
+import { formatCurrency, formatNumber } from "@/lib/formatters"
+import { Badge } from "../ui/badge"
   
+type PropsObject = {
+  id: string,
+  name: string,
+  price: number,
+  isAvailableForPurchase: Boolean,
+  sales: number
+}
 
-
-const AdminDashboardTable = () => {
+const AdminDashboardTable = ({ data }: { data: PropsObject[]}) => {
   return (
     <Card className="w-full md:col-span-2">
         <CardHeader>
@@ -40,14 +48,20 @@ const AdminDashboardTable = () => {
                 <TableBody>
 
                     {/*Loop throw the content's object that will contain the top 10 selling products , and create a tableRow for each one and fill it with the correct data*/}
+                    {
+                      data.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell className="font-medium">{product.id}</TableCell>
+                          <TableCell>{product.name}</TableCell>
+                          <TableCell>{formatCurrency(product.price)}</TableCell>
+                          <TableCell>{formatNumber(product.sales)}</TableCell>
+                          <TableCell className="text-right">
+                            <Badge variant={`${product.isAvailableForPurchase ? 'outline':'destructive'}`}>{product.isAvailableForPurchase ? 'Active':'Inactive'}</Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    }
                     
-                    <TableRow>
-                        <TableCell className="font-medium">product's id</TableCell>
-                        <TableCell>product's name</TableCell>
-                        <TableCell>product's price</TableCell>
-                        <TableCell>product's sales number</TableCell>
-                        <TableCell className="text-right">product's status</TableCell>
-                    </TableRow>
 
                 </TableBody>
             </Table>

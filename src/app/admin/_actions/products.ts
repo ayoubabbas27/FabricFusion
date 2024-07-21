@@ -4,13 +4,14 @@ import { z } from "zod"
 import db from "@/lib/db"
 import fs from "fs/promises"
 import { notFound, redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 const fileSchema = z.instanceof(File, { message: 'Required' });
 const imageSchema = fileSchema.refine(file => file.size === 0 || file.type.startsWith("image/"))
 
 const addProductSchema = z.object({
     name: z.string().min(1),
-    description: z.string().min(1),
+    description: z.string().min(1).max(1000),
     priceInCents: z.coerce.number().int().min(1),
     image: imageSchema.refine(file => file.size > 0, "Required")
 })
@@ -31,21 +32,24 @@ export async function addProduct (prevState: unknown, formData: FormData){
     const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
     await fs.writeFile(`public${imagePath}`, Buffer.from(await data.image.arrayBuffer()))
 
-    console.log(data);
-
     await db.product.create({ data: {
         name: data.name,
         priceInCents: data.priceInCents,
         imagePath,
         description: data.description,
-        isAvailableForPurchase: false
+        isAvailableForPurchase: false,
     }})
 
+    revalidatePath("/");
+    revalidatePath("/products");
     redirect('/admin/products');
 }
 
 export async function toggleProductAvailability(id: string, isAvailableForPurchase: boolean){
     await db.product.update({ where: {id}, data: { isAvailableForPurchase }})
+
+    revalidatePath("/");
+    revalidatePath("/products");
 }
 
 export async function deleteProduct (id: string){
@@ -53,6 +57,9 @@ export async function deleteProduct (id: string){
     if (product == null) return notFound();
 
     await fs.unlink(`public${product.imagePath}`)
+
+    revalidatePath("/");
+    revalidatePath("/products");
 }
 
 export async function editProduct (id: string, prevState: unknown, formData: FormData){
@@ -73,8 +80,6 @@ export async function editProduct (id: string, prevState: unknown, formData: For
         await fs.writeFile(`public${imagePath}`, Buffer.from(await data.image.arrayBuffer()))
     }
 
-    console.log(data);
-
     await db.product.update({ where: {id}, data: {
         name: data.name,
         priceInCents: data.priceInCents,
@@ -83,5 +88,7 @@ export async function editProduct (id: string, prevState: unknown, formData: For
         isAvailableForPurchase: false
     }})
 
+    revalidatePath("/");
+    revalidatePath("/products");
     redirect('/admin/products');
 }

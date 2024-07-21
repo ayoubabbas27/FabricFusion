@@ -13,6 +13,7 @@ import {AriaChart} from '@/components/sections/AreaChart'
 import AdminDashboardTable from '@/components/sections/AdminDashboardTable'
 import {DashboardPieChart} from '@/components/sections/PieChart'
 import {DashboardBarChart} from '@/components/sections/BarChart'
+import {PieChartLegend} from '@/components/sections/PieChartLegend'
 
 async function getSalesData() {
   const data = await db.order.aggregate({
@@ -49,13 +50,67 @@ async function getProductData(){
   }
 }
 
+async function getTopSellingProducts (){
+  const data = await db.product.findMany({ 
+      select: {
+          id: true,
+          name: true,
+          priceInCents: true,
+          isAvailableForPurchase: true,
+          _count:{
+              select: {
+                  orders: true
+              }
+          }
+      },
+      orderBy: {
+          orders:{
+              _count: "desc"
+          }
+      },
+      take: 10
+  });
+  
+  const result = data.map((product) => ({
+      id: product.id,
+      name: product.name,
+      price: product.priceInCents / 100,
+      isAvailableForPurchase: product.isAvailableForPurchase,
+      sales: product._count.orders
+  }))
+  return result;
+}
+
+async function getSalesSixMonths (){
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const data = db.order.findMany({
+    select:{
+      id: true,
+      createdAt: true
+    },
+    where: {
+      createdAt: {
+        gte: sixMonthsAgo
+      }
+    }
+  })
+
+  console.log(data)
+
+
+}
+
 const AdminDashboard = async () => {
-  const [salesData, usersData, productsData] = await Promise.all([
+  const [salesData, usersData, productsData, topSellingProductsData, salesSixMonths] = await Promise.all([
     getSalesData(),
     getUserData(),
-    getProductData()
+    getProductData(),
+    getTopSellingProducts(),
+    getSalesSixMonths()
   ])
-
+  console.log(salesSixMonths);
   return (
     <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-4 pt-2 md:pb-4 gap-4 xl:px-44'>
         <DashboardCard 
@@ -74,13 +129,16 @@ const AdminDashboard = async () => {
           content={formatNumber(productsData.activeProductsCount + productsData.inactiveProductsCount)}
         />
 
-        <AriaChart />
-        <DashboardPieChart />
+        <AdminDashboardTable data={topSellingProductsData}/>
 
+        <AriaChart />
+
+        <DashboardPieChart />
 
         <DashboardBarChart />
 
-        <AdminDashboardTable />
+        <PieChartLegend />
+
 
     </div>
   )
