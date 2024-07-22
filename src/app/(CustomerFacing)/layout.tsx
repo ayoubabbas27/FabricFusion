@@ -1,4 +1,5 @@
 import CustomerNav from "@/components/sections/CustomerNav"
+import Footer from "@/components/sections/Footer"
 
 export const dynamic = "force-dynamic"
 
@@ -8,11 +9,12 @@ export default function AdminLayout ({
     children: React.ReactNode
 }) {
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <CustomerNav />
-            <div className="w-full px-4 pb-4 pt-16 lg:pt-20 bg-[#ffffff] h-screen">
+            <main className="flex-grow w-full px-4 pb-4 pt-16 lg:pt-20 bg-[#ffffff]">
                 {children}
-            </div>
-        </>
+            </main>
+            <Footer />
+        </div>
     )
 }

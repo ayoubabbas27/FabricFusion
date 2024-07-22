@@ -41,7 +41,7 @@ async function SalesTable (){
     select:{
       id: true,
       pricePaidInCents: true,
-      shippingAddress: true,
+      country: true,
       fulfilled: true,
       createdAt: true,
       userId: true,
@@ -58,13 +58,11 @@ async function SalesTable (){
     <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-auto">
-              <span className='sr-only'>Transaction ID</span>
-            </TableHead>
-            <TableHead >Product</TableHead>
-            <TableHead>User</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Shipping Address</TableHead>
+            <TableHead >Transaction ID</TableHead>
+            <TableHead >Product ID</TableHead>
+            <TableHead>Customer ID</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Country</TableHead>
             <TableHead className="text-right">Shipping Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -72,21 +70,17 @@ async function SalesTable (){
           {
             salesData.map((sale) => (
               <TableRow key={sale.id}>
-                <TableCell className="w-auto">
-                  <span className='sr-only'>{sale.id}</span>
-                  </TableCell>
+                  <TableCell >{sale.id}</TableCell>
                   <TableCell >{sale.productId}</TableCell>
                   <TableCell>{sale.userId}</TableCell>
                   <TableCell>{formatCurrency(sale.pricePaidInCents/100)}</TableCell>
-                  <TableCell>{sale.shippingAddress}</TableCell>
+                  <TableCell>{sale.country}</TableCell>
                 <TableCell className="text-right">
                   <Badge variant={`${sale.fulfilled ? 'outline':'destructive'}`}>{sale.fulfilled ? 'Shipped':'Pending'}</Badge>
                 </TableCell>
               </TableRow>
             ))
           }
-          
-          
         </TableBody>
       </Table>
   )

@@ -48,7 +48,7 @@ async function CustomersTable (){
         }
       }
     },
-    orderBy: {email: "asc"}
+    orderBy: {createdAt: "desc"}
   });
 
   if (customersData.length === 0) return (<div className=' font-semibold text-xl text-center'>No Customers Found !</div>)
@@ -57,8 +57,7 @@ async function CustomersTable (){
     <Table>
         <TableHeader>
           <TableRow>
-            <TableHead >ID</TableHead>
-            <TableHead>Email</TableHead>
+            <TableHead >Email</TableHead>
             <TableHead>Orders</TableHead>
             <TableHead>Created At</TableHead>
           </TableRow>

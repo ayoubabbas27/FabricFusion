@@ -34,7 +34,7 @@ model User {
 model Order{
   id String @id @default(uuid())
   pricePaidInCents Int
-  shippingAddress String
+  country String
   fulfilled Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

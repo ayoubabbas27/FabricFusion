@@ -21,7 +21,7 @@ const getProductsData = cache(() => {
 
 const products = () => {
   return (
-    <main className='w-full flex flex-col justify-center items-center gap-3 self-center xl:px-44 pt-4 pb-4'>
+    <main className='w-full flex flex-col justify-center items-center gap-3 self-center xl:px-44 pt-4 pb-4 mb-28'>
 
       <h2 className="text-3xl font-bold text-start w-full">Products</h2>
 
@@ -50,12 +50,12 @@ async function ProductSuspense({productsFetcher}:{productsFetcher: () => Promise
         </CardHeader>
         <CardContent className="w-full h-full flex flex-col justify-between items-start gap-3">
           <span className="text-2xl font-bold text-black">{product.name}</span>
-          <span className="text-muted-foreground mb-3 italic">{product.description}</span>
+          <span className="text-muted-foreground mb-3 line-clamp-3">{product.description}</span>
           <span className="text-xl font-bold text-black">{formatCurrency(product.priceInCents/100)}</span>
         </CardContent>
         <CardFooter className="w-full flex flex-row justify-end items-center">
           <Button asChild>
-            <Link href={`/products/${product.id}/purchase`}>Add To Cart</Link> 
+            <Link href={`/products/${product.id}/purchase`}>Purchase</Link> 
           </Button>
         </CardFooter>
       </Card>

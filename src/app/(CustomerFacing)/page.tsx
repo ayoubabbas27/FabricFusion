@@ -46,7 +46,7 @@ const getMostPopularProducts = cache(() => {
 
 export default function Home() {
   return (
-    <main className="w-full pb-4 pt-2 md:pb-4 space-y-12">
+    <main className="w-full pb-4 pt-2 md:pb-4 space-y-12 min-h-screen ">
       <StoreFrontBanner />
       <ProductsGridSection productsFetcher={getMostPopularProducts} title="Most Popular Products"/>
       <ProductsGridSection productsFetcher={getNewestProducts} title="Newest Products Products"/>
@@ -62,7 +62,7 @@ type ProductsGridSectionProps = {
 function ProductsGridSection ({productsFetcher, title}: ProductsGridSectionProps){
 
   return (
-    <div className="w-full flex flex-col justify-center items-center gap-3 self-center xl:px-44">
+    <div className="w-full flex flex-col justify-center items-center gap-3  xl:px-44">
 
       <div className="w-full flex flex-row justify-start items-center gap-3">
         <h2 className="text-3xl font-bold">{title}</h2>
@@ -100,12 +100,12 @@ async function ProductSuspense({productsFetcher}:{productsFetcher: () => Promise
         </CardHeader>
         <CardContent className="w-full h-full flex flex-col justify-between items-start gap-3">
           <span className="text-2xl font-bold text-black">{product.name}</span>
-          <span className="text-muted-foreground mb-3 italic">{product.description}</span>
+          <span className="text-muted-foreground mb-3 line-clamp-3">{product.description}</span>
           <span className="text-xl font-bold text-black">{formatCurrency(product.priceInCents/100)}</span>
         </CardContent>
         <CardFooter className="w-full flex flex-row justify-end items-center">
         <Button asChild>
-            <Link href={`/products/${product.id}/purchase`}>Add To Cart</Link> 
+            <Link href={`/products/${product.id}/purchase`}>Purchase</Link> 
           </Button>
         </CardFooter>
       </Card>

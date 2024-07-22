@@ -12,7 +12,7 @@ const CustomerNav = () => {
   const isActive = (href: string) => href === usePathname();
 
   return (
-    <nav className='fixed top-0 left0 z-40 bg-white w-full text-black flex flex-row justify-between items-center p-4 lg:px-10 border-b-2 border-slate-200 '>
+    <nav className='fixed top-0 left-0 z-40 bg-white w-full text-black flex flex-row justify-between items-center p-4 lg:px-10 border-b-2 border-slate-200 '>
         <Link href='/' className="flex flex-row justify-center items-center z-40 lg:text-lg">
           <span className="font-bold text-black text-lg">Fabric Fusion</span>
         </Link>
