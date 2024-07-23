@@ -17,23 +17,77 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { Order } from "@prisma/client"
+import { formatDate } from "@/lib/formatters"
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", sales: 186 },
+  { month: "February", sales: 305 },
+  { month: "March", sales: 237 },
+  { month: "April", sales: 73 },
+  { month: "May", sales: 209 },
+  { month: "June", sales: 214 },
 ]
 
 const chartConfig = {
-  desktop: {
+  sales: {
     label: "Sales",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function AriaChart() {
+function extractMonth(date: string): string {
+  const monthAbr = date.split("-")[1].toLowerCase();
+
+  switch (monthAbr) {
+    case "jan":
+      return "January";
+    case "feb":
+      return "February";
+    case "mar":
+      return "March";
+    case "apr":
+      return "April";
+    case "may":
+      return "May";
+    case "jun":
+      return "June";
+    case "jul":
+      return "July";
+    case "aug":
+      return "August";
+    case "sep":
+      return "September";
+    case "oct":
+      return "October";
+    case "nov":
+      return "November";
+    case "dec":
+      return "December";
+    default:
+      return "Invalid month";
+  }
+}
+
+type MonthNumberType ={
+  [key: string]: number
+}
+export function AriaChart({ data }:{ data: Order[]}) {
+
+  const salesData: MonthNumberType = data.reduce((acc: MonthNumberType, curr: Order) => {
+    const month = extractMonth(formatDate(curr.createdAt.toString()));
+    if (acc[month]){
+      acc[month]++;
+    }else{
+      acc[month] = 1;
+    }
+    return acc;
+  },{});
+
+  const filteredData = Object.keys(salesData).map((key: string) => {
+    return {month: key , sales: salesData[key]}
+  })
+
+
   return (
     <Card className="md:col-span-1">
       <CardHeader>
@@ -46,7 +100,7 @@ export function AriaChart() {
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={filteredData}
             margin={{
               left: 12,
               right: 12,
@@ -65,27 +119,15 @@ export function AriaChart() {
               content={<ChartTooltipContent indicator="line" />}
             />
             <Area
-              dataKey="desktop"
+              dataKey="sales"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="var(--color-sales)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-sales)"
             />
           </AreaChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
-            </div>
-          </div>
-        </div>
-      </CardFooter>
     </Card>
   )
 }

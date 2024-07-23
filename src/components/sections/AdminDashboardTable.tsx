@@ -17,13 +17,16 @@ import {
   } from "@/components/ui/table"
 import { formatCurrency, formatNumber } from "@/lib/formatters"
 import { Badge } from "../ui/badge"
+import { ScrollArea } from "../ui/scroll-area"
+import Image from "next/image"
   
 type PropsObject = {
   id: string,
   name: string,
   price: number,
   isAvailableForPurchase: Boolean,
-  sales: number
+  sales: number,
+  image: string
 }
 
 const AdminDashboardTable = ({ data }: { data: PropsObject[]}) => {
@@ -31,10 +34,9 @@ const AdminDashboardTable = ({ data }: { data: PropsObject[]}) => {
     <Card className="w-full md:col-span-2">
         <CardHeader>
             <CardTitle>Top Selling Products</CardTitle>
-            <CardDescription>List of the Top 10 Products by Sales Volume</CardDescription>
+            <CardDescription>List of the Top 5 Products by Sales Volume</CardDescription>
         </CardHeader>
         <CardContent>
-
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -45,27 +47,36 @@ const AdminDashboardTable = ({ data }: { data: PropsObject[]}) => {
                       <TableHead className="text-right">Status</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
+                  <TableBody>
 
-                    {/*Loop throw the content's object that will contain the top 10 selling products , and create a tableRow for each one and fill it with the correct data*/}
-                    {
-                      data.map((product) => (
-                        <TableRow key={product.id}>
-                          <TableCell className="font-medium">{product.id}</TableCell>
-                          <TableCell>{product.name}</TableCell>
-                          <TableCell>{formatCurrency(product.price)}</TableCell>
-                          <TableCell>{formatNumber(product.sales)}</TableCell>
-                          <TableCell className="text-right">
-                            <Badge variant={`${product.isAvailableForPurchase ? 'outline':'destructive'}`}>{product.isAvailableForPurchase ? 'Active':'Inactive'}</Badge>
+                      {
+                        data.map((product) => (
+                          <TableRow key={product.id}>
+
+                          <TableCell>
+                            <Image 
+                              src={product.image} 
+                              alt='product image' 
+                              width={80} 
+                              height={80}
+                              className='p-0 m-0 min-w-16 min-h-16 rounded-md'
+                            />
                           </TableCell>
-                        </TableRow>
-                      ))
-                    }
-                    
 
-                </TableBody>
+
+                            <TableCell>{product.name}</TableCell>
+                            <TableCell>{formatCurrency(product.price)}</TableCell>
+                            <TableCell>{formatNumber(product.sales)}</TableCell>
+                            <TableCell className="text-right">
+                              <Badge variant={`${product.isAvailableForPurchase ? 'outline':'destructive'}`}>{product.isAvailableForPurchase ? 'Active':'Inactive'}</Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      }
+
+                  </TableBody>
+                
             </Table>
-
         </CardContent>
     </Card>
   )

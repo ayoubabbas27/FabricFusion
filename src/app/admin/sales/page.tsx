@@ -1,11 +1,8 @@
 import React from 'react'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import db from '@/lib/db'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -23,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Ellipsis } from 'lucide-react'
-import { ProductStatusToggleDropdownItem, DeleteDropDownItem } from '@/components/sections/ProductActions'
+import { OrderActionsToggleStatus } from '@/components/sections/OrderActionsToggleStatus'
 
 const AdminSales = () => {
   return (
@@ -45,12 +42,48 @@ async function SalesTable (){
       fulfilled: true,
       createdAt: true,
       userId: true,
-      productId: true
+      productId: true,
+      user: {
+        select: {
+          email: true
+        }
+      },
+      product: {
+        select:{
+          name: true
+        }
+      }
     },
     orderBy:{
       createdAt: "desc"
     }
   })
+
+async function ProductUserData(productId: string, userId: string){
+  const [productName, userEmail] = await Promise.all([
+    db.product.findUnique({
+      where: {
+        id: productId
+      },
+      select:{
+        name: true
+      }
+    }),
+    db.user.findUnique({
+      where:{
+        id: userId
+      },
+      select: {
+        email: true
+      }
+    })
+  ]);
+
+  return {
+    productData: productName?.name as string,
+    userData: userEmail?.email as string
+  }
+}
 
   if (salesData.length === 0) return (<div className=' font-semibold text-xl text-center'>No Sales Found !</div>)
 
@@ -64,6 +97,9 @@ async function SalesTable (){
             <TableHead>Amount</TableHead>
             <TableHead>Country</TableHead>
             <TableHead className="text-right">Shipping Status</TableHead>
+            <TableHead className='w-0'>
+              <span className='sr-only'>Actions</span>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -71,12 +107,31 @@ async function SalesTable (){
             salesData.map((sale) => (
               <TableRow key={sale.id}>
                   <TableCell >{sale.id}</TableCell>
-                  <TableCell >{sale.productId}</TableCell>
-                  <TableCell>{sale.userId}</TableCell>
+                  <TableCell >{sale.product.name}</TableCell>
+                  <TableCell>{sale.user.email}</TableCell>
                   <TableCell>{formatCurrency(sale.pricePaidInCents/100)}</TableCell>
                   <TableCell>{sale.country}</TableCell>
                 <TableCell className="text-right">
                   <Badge variant={`${sale.fulfilled ? 'outline':'destructive'}`}>{sale.fulfilled ? 'Shipped':'Pending'}</Badge>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger >
+                      <Ellipsis/>
+                      <span className='sr-only'>Actions</span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+                      <DropdownMenuSeparator />
+
+                        <OrderActionsToggleStatus 
+                          id={sale.id}
+                          fulfilled={sale.fulfilled}
+                        />
+                        
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))

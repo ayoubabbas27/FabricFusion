@@ -15,7 +15,7 @@ import {DashboardPieChart} from '@/components/sections/PieChart'
 import {DashboardBarChart} from '@/components/sections/BarChart'
 import {PieChartLegend} from '@/components/sections/PieChartLegend'
 
-async function getSalesData() {
+async function getSamesAggregate() {
   const data = await db.order.aggregate({
     _sum: {pricePaidInCents: true},
     _count: true
@@ -56,6 +56,7 @@ async function getTopSellingProducts (){
           id: true,
           name: true,
           priceInCents: true,
+          imagePath: true,
           isAvailableForPurchase: true,
           _count:{
               select: {
@@ -68,7 +69,7 @@ async function getTopSellingProducts (){
               _count: "desc"
           }
       },
-      take: 10
+      take: 5
   });
   
   const result = data.map((product) => ({
@@ -76,20 +77,42 @@ async function getTopSellingProducts (){
       name: product.name,
       price: product.priceInCents / 100,
       isAvailableForPurchase: product.isAvailableForPurchase,
-      sales: product._count.orders
+      sales: product._count.orders,
+      image: product.imagePath
   }))
   return result;
+}
+
+async function getUsersSixMonths (){
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const data = await db.user.groupBy({
+    where:{
+      createdAt: {
+        gte: sixMonthsAgo
+      }
+    },
+    by: ["createdAt"],
+    _count: true
+  })
+
+  return data;
+}
+
+async function getOrdersFulfillmentStates(){
+  const data = await db.order.groupBy({
+    by: ["fulfilled"],
+    _count: true
+  });
+  return data;
 }
 
 async function getSalesSixMonths (){
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
-  const data = db.order.findMany({
-    select:{
-      id: true,
-      createdAt: true
-    },
+  const data = await db.order.findMany({
     where: {
       createdAt: {
         gte: sixMonthsAgo
@@ -97,18 +120,38 @@ async function getSalesSixMonths (){
     }
   })
 
-  console.log(data)
+  return data;
+}
 
-
+async function getSalesPerCountry(){
+  const data = await db.order.groupBy({
+    by: ["country"],
+    _count: {
+      country: true
+    }
+  })
+  return data;
 }
 
 const AdminDashboard = async () => {
-  const [salesData, usersData, productsData, topSellingProductsData, salesSixMonths] = await Promise.all([
-    getSalesData(),
+  const [
+    salesData, 
+    usersData, 
+    productsData, 
+    topSellingProductsData, 
+    salesSixMonths,
+    salesPerCountry,
+    usersSixMonths,
+    orderFulfillmentStates
+  ] = await Promise.all([
+    getSamesAggregate(),
     getUserData(),
     getProductData(),
     getTopSellingProducts(),
-    getSalesSixMonths()
+    getSalesSixMonths(),
+    getSalesPerCountry(),
+    getUsersSixMonths(),
+    getOrdersFulfillmentStates()
   ])
   console.log(salesSixMonths);
   return (
@@ -131,14 +174,13 @@ const AdminDashboard = async () => {
 
         <AdminDashboardTable data={topSellingProductsData}/>
 
-        <AriaChart />
+        <AriaChart data={salesSixMonths}/>
 
-        <DashboardPieChart />
+        <DashboardPieChart data={salesPerCountry}/>
 
-        <DashboardBarChart />
+        <DashboardBarChart data={usersSixMonths}/>
 
-        <PieChartLegend />
-
+        <PieChartLegend data={orderFulfillmentStates}/>
 
     </div>
   )

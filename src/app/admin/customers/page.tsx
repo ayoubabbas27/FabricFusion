@@ -1,29 +1,14 @@
-import React from 'react'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import db from '@/lib/db'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import Image from 'next/image'
-import { formatCurrency, formatDate, formatNumber } from '@/lib/formatters'
-import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Ellipsis } from 'lucide-react'
-import { ProductStatusToggleDropdownItem, DeleteDropDownItem } from '@/components/sections/ProductActions'
+import { formatDate, formatNumber } from '@/lib/formatters'
+
 
 const AdminCustomers = () => {
   return (

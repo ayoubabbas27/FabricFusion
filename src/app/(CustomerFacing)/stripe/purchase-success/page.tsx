@@ -26,7 +26,7 @@ const SuccessPage = async ({
     const isSuccess = paymentIntent.status === "succeeded"
 
   return (
-    <div className='max-w-5xl w-full mx-auto space-y-8 mt-4'>
+    <div className='max-w-5xl w-full mx-auto space-y-8 mt-4 mb-40'>
         <h1 className={`text-4xl font-bold ${!isSuccess && 'text-destructive'}`}>{isSuccess ? 'Success !' : 'Error !'}</h1>
         <div className="flex gap-4 items-center">
             <div className="aspect-square flex-shrink-0 w-1/3 relative">

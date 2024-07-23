@@ -47,7 +47,6 @@ const contactUs = () => {
               {isLoading ? 'Sending...' : 'Send'}
             </Button>
           </div>
-          
         </form>
       </div>
     </div>

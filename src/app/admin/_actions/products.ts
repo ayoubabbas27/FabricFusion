@@ -76,8 +76,10 @@ export async function editProduct (id: string, prevState: unknown, formData: For
     let imagePath = product.imagePath;
     if (data.image != null && data.image.size > 0){
         await fs.unlink(`public${product.imagePath}`);
+        const arrayBuffer: ArrayBuffer = await data.image.arrayBuffer();
+        const buffer: Buffer = Buffer.from(arrayBuffer);
         imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-        await fs.writeFile(`public${imagePath}`, Buffer.from(await data.image.arrayBuffer()))
+        await fs.writeFile(`public${imagePath}`, buffer);
     }
 
     await db.product.update({ where: {id}, data: {

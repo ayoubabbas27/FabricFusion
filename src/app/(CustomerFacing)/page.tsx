@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/button"
 import StoreFrontBanner from "@/components/sections/StoreFrontBanner"
 import SkeletonCard from "@/components/sections/SkeletonCard"
@@ -6,10 +5,8 @@ import db from "@/lib/db";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 import { formatCurrency } from "@/lib/formatters";
 import { Product } from "@prisma/client";
@@ -96,7 +93,7 @@ async function ProductSuspense({productsFetcher}:{productsFetcher: () => Promise
     (await productsFetcher()).map((product) => (
       <Card key={product.id} className="flex flex-col justify-between items-center">
         <CardHeader>
-          <img src={product.imagePath} alt="product image" className="rounded-md aspect-square"/>
+          <img src={product.imagePath} alt="product image" className="rounded-md object-fit"/>
         </CardHeader>
         <CardContent className="w-full h-full flex flex-col justify-between items-start gap-3">
           <span className="text-2xl font-bold text-black">{product.name}</span>

@@ -17,24 +17,75 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { User } from "@prisma/client"
+import { formatDate } from "@/lib/formatters"
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", users: 186 },
+  { month: "February", users: 305 },
+  { month: "March", users: 237 },
+  { month: "April", users: 73 },
+  { month: "May", users: 209 },
+  { month: "June", users: 214 },
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  users: {
+    label: "Users",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function DashboardBarChart() {
+type UserGroupByResult = {
+  createdAt: Date; 
+  _count: number
+};
+function extractMonth(date: string): string {
+  const monthAbr = date.split("-")[1].toLowerCase();
+
+  switch (monthAbr) {
+    case "jan":
+      return "January";
+    case "feb":
+      return "February";
+    case "mar":
+      return "March";
+    case "apr":
+      return "April";
+    case "may":
+      return "May";
+    case "jun":
+      return "June";
+    case "jul":
+      return "July";
+    case "aug":
+      return "August";
+    case "sep":
+      return "September";
+    case "oct":
+      return "October";
+    case "nov":
+      return "November";
+    case "dec":
+      return "December";
+    default:
+      return "Invalid month";
+  }
+}
+
+type MonthNumberType ={
+  [key: string]: number
+}
+
+export function DashboardBarChart({data}:{data: UserGroupByResult[]}) {
+
+  const filteredData = data.map((elem) => {
+    return {
+      month: extractMonth(formatDate(elem.createdAt.toString())),
+      users: elem._count
+    }
+  }) 
+
   return (
     <Card className="md:col-span-1">
       <CardHeader>
@@ -45,7 +96,7 @@ export function DashboardBarChart() {
         <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={filteredData}
             margin={{
               top: 20,
             }}
@@ -62,7 +113,7 @@ export function DashboardBarChart() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8}>
+            <Bar dataKey="users" fill="var(--color-users)" radius={8}>
               <LabelList
                 position="top"
                 offset={12}

@@ -16,40 +16,42 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart"
 const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
+  { state: "chrome", number: 275, fill: "var(--color-chrome)" },
+  { state: "safari", number: 200, fill: "var(--color-safari)" },
+  { state: "firefox", number: 187, fill: "var(--color-firefox)" },
+  { state: "edge", number: 173, fill: "var(--color-edge)" },
+  { state: "other", number: 90, fill: "var(--color-other)" },
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  number: {
+    label: "number",
   },
-  chrome: {
-    label: "Chrome",
+  pending: {
+    label: "pending",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
+  shipped: {
+    label: "shipped",
     color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
+  }
 } satisfies ChartConfig
 
-export function PieChartLegend() {
+type PropsType = {
+  fulfilled: boolean;
+  _count: number
+}
+
+export function PieChartLegend({ data }:{ data:PropsType[] }) {
+
+  const filteredData = data.map((element, index) => {
+    return {
+      state: element.fulfilled ? chartConfig.shipped.label : chartConfig.pending.label,
+      number: element._count,
+      fill: `var(--color-${element.fulfilled ? 'shipped':'pending'})`
+    }
+  })
+
   return (
     <Card className="flex flex-col md:col-span-1">
       <CardHeader className="items-center pb-0">
@@ -62,9 +64,9 @@ export function PieChartLegend() {
           className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
-            <Pie data={chartData} dataKey="visitors" />
+            <Pie data={filteredData} dataKey="number" />
             <ChartLegend
-              content={<ChartLegendContent nameKey="browser" />}
+              content={<ChartLegendContent nameKey="state" />}
               className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
             />
           </PieChart>

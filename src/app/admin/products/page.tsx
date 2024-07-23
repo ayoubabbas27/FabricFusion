@@ -116,7 +116,7 @@ async function ProductsTable (){
                         />
                         <DeleteDropDownItem 
                           id={product.id}
-                          disabled={product.orders.some((order) => order.fulfilled === false)}
+                          disabled={product.orders.some((order) => order.fulfilled == false)}
                         />
                     </DropdownMenuContent>
                   </DropdownMenu>

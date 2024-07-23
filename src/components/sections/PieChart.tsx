@@ -18,32 +18,25 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  sales: {
+    label: "Sales",
   },
-  chrome: {
-    label: "Chrome",
+  fr: {
+    label: "France",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
+  us: {
+    label: "United States",
     color: "hsl(var(--chart-2))",
   },
-  firefox: {
-    label: "Firefox",
+  jp: {
+    label: "Japan",
     color: "hsl(var(--chart-3))",
   },
-  edge: {
-    label: "Edge",
+  uae: {
+    label: "United Arab Emirates",
     color: "hsl(var(--chart-4))",
   },
   other: {
@@ -52,16 +45,34 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function DashboardPieChart() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+type SalesByCountry = {
+  country: string;
+  _count: {
+    country: number;
+  };
+};
+
+export function DashboardPieChart({ data }: { data: SalesByCountry[]}) {
+
+  const totalSales: number = data.reduce((acc: number, curr: SalesByCountry)=>{
+    acc = acc + curr._count.country;
+    return acc;
+  },0);
+
+  const filteredData = data.reduce((acc: {country: string, sales: number, fill: string}[], curr: SalesByCountry) => {
+    acc.push({
+      country: curr.country,
+      sales: curr._count.country,
+      fill: `hsl(var(--chart-${acc.length+1}))`
+    })
+    return acc;
+  },[]);
 
   return (
     <Card className="flex flex-col md:col-span-1">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Sales Distribution by Continent</CardTitle>
-        <CardDescription>Breakdown of Sales Across Different Continents</CardDescription>
+        <CardTitle>Sales Distribution by Country</CardTitle>
+        <CardDescription>Breakdown of Sales Across Different Countries</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -74,9 +85,9 @@ export function DashboardPieChart() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              data={filteredData}
+              dataKey="sales"
+              nameKey="country"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -95,14 +106,14 @@ export function DashboardPieChart() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalSales}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          Sales
                         </tspan>
                       </text>
                     )
@@ -113,14 +124,6 @@ export function DashboardPieChart() {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   )
 }

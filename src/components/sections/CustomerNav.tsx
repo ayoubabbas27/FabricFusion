@@ -56,7 +56,11 @@ const CustomerNav = () => {
             ))
           }
         </div>
-        <div className="hidden lg:block">Account</div>
+        <Button className="hidden lg:flex " asChild>
+            <Link href="/products">
+                See Collection                
+            </Link>
+        </Button>
     </nav>
   )
 }
