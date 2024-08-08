@@ -1,4 +1,4 @@
-﻿# Scooter Station Management System
+﻿# E-commerce store (Full-Stack)
 ## Overview
 Fabric Fusion is a comprehensive clothing e-commerce store built with Next.js and TypeScript, designed to provide a seamless online shopping experience. The platform integrates advanced features for both users and administrators, including real-time data updates and secure payment processing.
 
