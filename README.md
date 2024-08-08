@@ -5,22 +5,22 @@ Fabric Fusion is a comprehensive clothing e-commerce store built with Next.js an
 <hr />
 
 ## Features
-- Product Catalog: Browse and filter a diverse range of clothing items with detailed descriptions, images, and pricing.
-- Stripe Integration: Secure online payments and automatic receipt emails to customers.
-- Admin Dashboard: Manage products, view sales data, handle orders, and track shipments with a powerful admin interface.
-- Interactive Analytics: Visualize sales and customer data with interactive charts.
-- User Authentication: Secure login and registration for customers and admin users.
-- Contact Form: Allows customers to easily reach out for support or inquiries.
+- **Product Catalog**: Browse and filter a diverse range of clothing items with detailed descriptions, images, and pricing.
+- **Stripe Integration**: Secure online payments and automatic receipt emails to customers.
+- **Admin Dashboard**: Manage products, view sales data, handle orders, and track shipments with a powerful admin interface.
+- **Interactive Analytics**: Visualize sales and customer data with interactive charts.
+- **User Authentication**: Secure login and registration for customers and admin users.
+- **Contact Form**: Allows customers to easily reach out for support or inquiries.
 
 <hr />
 
 ## Technical Stack
-- Programming Languages: TypeScript, JavaScript (Next.js)
-- Frontend Framework: ReactJS
-- Styling: Tailwind CSS
-- Payment Processing: Stripe API
-- Database: MySQL
-- ORM: Prisma ORM
+- **Programming Languages**: TypeScript, JavaScript (Next.js)
+- **Frontend Framework**: ReactJS
+- **Styling**: Tailwind CSS
+- **Payment Processing**: Stripe API
+- **Database**: MySQL
+- **ORM**: Prisma ORM
 
 <hr />
 
