@@ -30,6 +30,8 @@ Fabric Fusion is a comprehensive clothing e-commerce store built with Next.js an
 ### Scooters parc display
 ![IMG1!](display_assests/display.gif)
 
+<hr />
+
 ## Challenges and Solutions
 ### Payment Integration
 - Integrated Stripe API to handle secure online payments and automatic receipt emails, ensuring a smooth transaction experience for users.
